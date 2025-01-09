@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { DropZone } from "@/components/DropZone";
 import { ConversionProgress } from "@/components/ConversionProgress";
+import { ConversionContent } from "@/components/ConversionContent";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Download } from "lucide-react";
@@ -140,6 +141,8 @@ const Converter = () => {
               {t.subtitle}
             </p>
           </div>
+
+          <ConversionContent input={input || ""} output={output || ""} lang={lang} />
 
           <DropZone
             onFilesAccepted={handleFilesAccepted}
