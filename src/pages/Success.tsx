@@ -5,6 +5,7 @@ import { Download, ArrowLeft, Image as ImageIcon } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import JSZip from "jszip";
 
 const translations = {
   en: {
@@ -17,6 +18,7 @@ const translations = {
     downloadTip: "Click the button below to download all your converted images",
     downloadStarted: "Download started",
     downloadError: "Error downloading images",
+    downloadComplete: "Download complete",
   },
   pt: {
     title: "Conversão Concluída!",
@@ -28,6 +30,7 @@ const translations = {
     downloadTip: "Clique no botão abaixo para baixar todas as suas imagens convertidas",
     downloadStarted: "Download iniciado",
     downloadError: "Erro ao baixar imagens",
+    downloadComplete: "Download completo",
   },
 };
 
@@ -40,7 +43,6 @@ const Success = () => {
   const imageCount = location.state?.imageCount || parseInt(sessionStorage.getItem('imageCount') || '0');
 
   useEffect(() => {
-    // Try to get converted files from location state first, then from sessionStorage
     const files = location.state?.convertedFiles || JSON.parse(sessionStorage.getItem('convertedFiles') || '[]');
     setConvertedFiles(files);
   }, [location.state]);
@@ -51,8 +53,9 @@ const Success = () => {
         description: t.downloadStarted,
       });
 
-      // Fetch and download each file
-      for (const file of convertedFiles) {
+      if (convertedFiles.length === 1) {
+        // Single file download
+        const file = convertedFiles[0];
         const response = await fetch(file.url);
         const blob = await response.blob();
         const blobUrl = window.URL.createObjectURL(blob);
@@ -64,7 +67,38 @@ const Success = () => {
         link.click();
         document.body.removeChild(link);
         window.URL.revokeObjectURL(blobUrl);
+      } else {
+        // Multiple files - create zip
+        const zip = new JSZip();
+
+        // Add all files to zip
+        const fetchPromises = convertedFiles.map(async (file) => {
+          const response = await fetch(file.url);
+          const blob = await response.blob();
+          zip.file(file.name, blob);
+        });
+
+        await Promise.all(fetchPromises);
+
+        // Generate and download zip
+        const zipBlob = await zip.generateAsync({ type: "blob" });
+        const zipUrl = window.URL.createObjectURL(zipBlob);
+        
+        const link = document.createElement('a');
+        link.href = zipUrl;
+        link.download = "converted_images.zip";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(zipUrl);
       }
+
+      toast({
+        description: t.downloadComplete,
+      });
+
+      // Clear session storage after successful download
+      sessionStorage.clear();
     } catch (error) {
       console.error('Download error:', error);
       toast({
@@ -76,6 +110,7 @@ const Success = () => {
 
   const handleBack = () => {
     navigate(`/${lang}`);
+    // Clear session storage when going back
     sessionStorage.clear();
   };
 
