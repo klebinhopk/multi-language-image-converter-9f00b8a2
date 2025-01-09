@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Download, ArrowLeft, Image as ImageIcon } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useEffect } from "react";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 const translations = {
   en: {
@@ -55,15 +55,20 @@ const Success = () => {
         description: t.downloadStarted,
       });
 
-      // Create a temporary link element for each file and trigger download
-      convertedFiles.forEach((file: { url: string, name: string }) => {
+      // Fetch and download each file
+      for (const file of convertedFiles) {
+        const response = await fetch(file.url);
+        const blob = await response.blob();
+        const blobUrl = window.URL.createObjectURL(blob);
+        
         const link = document.createElement('a');
-        link.href = file.url;
+        link.href = blobUrl;
         link.download = file.name;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-      });
+        window.URL.revokeObjectURL(blobUrl);
+      }
     } catch (error) {
       console.error('Download error:', error);
       toast({
