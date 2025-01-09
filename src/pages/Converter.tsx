@@ -146,28 +146,27 @@ const Converter = () => {
                 />
               ))}
               
-              {!isConverting && !conversionComplete && (
+              <div className="flex flex-col gap-4 animate-fade-up">
                 <Button
                   size="lg"
                   onClick={startConversion}
-                  className="w-full animate-fade-up"
+                  disabled={isConverting}
+                  className="w-full"
                 >
                   {t.startConversion}
                 </Button>
-              )}
-            </div>
-          )}
 
-          {conversionComplete && (
-            <div className="flex flex-col items-center gap-4 animate-fade-in">
-              <Button
-                size="lg"
-                onClick={handleContinue}
-                className="w-full max-w-md"
-              >
-                <Download className="mr-2 h-4 w-4" />
-                {t.continue}
-              </Button>
+                {conversionComplete && (
+                  <Button
+                    size="lg"
+                    onClick={handleContinue}
+                    className="w-full"
+                  >
+                    <Download className="mr-2 h-4 w-4" />
+                    {t.continue}
+                  </Button>
+                )}
+              </div>
             </div>
           )}
         </div>
