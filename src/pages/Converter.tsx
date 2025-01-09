@@ -20,6 +20,7 @@ const translations = {
     converting: "Converting",
     downloadCompleted: "Download Completed",
     continue: "Continue to Download Page",
+    startConversion: "Convert Images",
   },
   pt: {
     title: "Enviar Imagens",
@@ -28,6 +29,7 @@ const translations = {
     converting: "Convertendo",
     downloadCompleted: "Download Concluído",
     continue: "Continuar para Página de Download",
+    startConversion: "Converter Imagens",
   },
 };
 
@@ -35,6 +37,7 @@ const Converter = () => {
   const { lang = "en", input, output } = useParams();
   const navigate = useNavigate();
   const [files, setFiles] = useState<FileProgress[]>([]);
+  const [isConverting, setIsConverting] = useState(false);
   const [conversionComplete, setConversionComplete] = useState(false);
   
   const t = translations[lang as keyof typeof translations];
@@ -45,22 +48,36 @@ const Converter = () => {
       progress: 0,
     }));
     setFiles(prev => [...prev, ...newFiles]);
+  };
+
+  const handleRemoveFile = (file: File) => {
+    setFiles(prev => prev.filter(f => f.file !== file));
+  };
+
+  const startConversion = () => {
+    if (files.length === 0) {
+      toast.error("Please upload at least one image first");
+      return;
+    }
     
-    // Simulate conversion progress
-    acceptedFiles.forEach((file, index) => {
+    setIsConverting(true);
+    
+    // Simulate conversion progress for each file
+    files.forEach((file, index) => {
       let progress = 0;
       const interval = setInterval(() => {
         progress += 10;
         setFiles(prev => 
           prev.map((f, i) => 
-            f.file === file ? { ...f, progress } : f
+            i === index ? { ...f, progress } : f
           )
         );
         
         if (progress >= 100) {
           clearInterval(interval);
-          if (index === acceptedFiles.length - 1) {
+          if (index === files.length - 1) {
             toast.success("Conversion complete!");
+            setIsConverting(false);
             setConversionComplete(true);
           }
         }
@@ -68,15 +85,26 @@ const Converter = () => {
     });
   };
 
-  const handleRemoveFile = (file: File) => {
-    setFiles(prev => prev.filter(f => f.file !== file));
-  };
-
   const handleContinue = () => {
     navigate(`/${lang}/${input}/${output}/success`, {
       state: { imageCount: files.length }
     });
   };
+
+  // Persist files state in sessionStorage when it changes
+  useEffect(() => {
+    if (files.length > 0) {
+      sessionStorage.setItem('uploadedFiles', JSON.stringify(files));
+    }
+  }, [files]);
+
+  // Restore files state from sessionStorage on component mount
+  useEffect(() => {
+    const savedFiles = sessionStorage.getItem('uploadedFiles');
+    if (savedFiles) {
+      setFiles(JSON.parse(savedFiles));
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-background p-4">
@@ -117,6 +145,16 @@ const Converter = () => {
                   onRemove={() => handleRemoveFile(file)}
                 />
               ))}
+              
+              {!isConverting && !conversionComplete && (
+                <Button
+                  size="lg"
+                  onClick={startConversion}
+                  className="w-full animate-fade-up"
+                >
+                  {t.startConversion}
+                </Button>
+              )}
             </div>
           )}
 
