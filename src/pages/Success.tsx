@@ -3,6 +3,7 @@ import { LanguageSelector } from "@/components/LanguageSelector";
 import { Button } from "@/components/ui/button";
 import { Download, ArrowLeft, Image as ImageIcon } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { useEffect } from "react";
 
 const translations = {
   en: {
@@ -29,8 +30,21 @@ const Success = () => {
   const { lang = "en" } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const imageCount = location.state?.imageCount || 0;
+  const imageCount = location.state?.imageCount || sessionStorage.getItem('imageCount') || 0;
   const t = translations[lang as keyof typeof translations];
+
+  // Store imageCount in sessionStorage when it changes
+  useEffect(() => {
+    if (location.state?.imageCount) {
+      sessionStorage.setItem('imageCount', location.state.imageCount.toString());
+    }
+  }, [location.state?.imageCount]);
+
+  const handleBack = () => {
+    navigate(`/${lang}`);
+    // Clear session storage when going back to start
+    sessionStorage.clear();
+  };
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
@@ -73,7 +87,7 @@ const Success = () => {
           variant="outline"
           size="lg"
           className="w-full"
-          onClick={() => navigate(`/${lang}`)}
+          onClick={handleBack}
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           {t.convertMore}

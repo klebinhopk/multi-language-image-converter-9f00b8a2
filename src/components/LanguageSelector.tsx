@@ -7,8 +7,13 @@ export function LanguageSelector() {
   const currentLang = currentPath.split("/")[1] || "en";
 
   const switchLanguage = (lang: string) => {
-    const newPath = currentPath.replace(`/${currentLang}`, `/${lang}`);
-    navigate(newPath);
+    const pathParts = currentPath.split('/');
+    pathParts[1] = lang;
+    const newPath = pathParts.join('/');
+    
+    // Preserve the state when navigating
+    const state = window.history.state?.usr || {};
+    navigate(newPath, { state });
   };
 
   return (
