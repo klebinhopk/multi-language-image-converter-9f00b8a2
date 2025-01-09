@@ -63,7 +63,6 @@ const Converter = () => {
     
     setIsConverting(true);
     
-    // Simulate conversion progress for each file
     files.forEach((file, index) => {
       let progress = 0;
       const interval = setInterval(() => {
@@ -87,13 +86,11 @@ const Converter = () => {
   };
 
   const handleContinue = () => {
-    // Prepare converted files data
     const convertedFiles = files.map(({ file }) => ({
       name: file.name,
       url: URL.createObjectURL(file)
     }));
 
-    // Store in sessionStorage and navigate
     sessionStorage.setItem('convertedFiles', JSON.stringify(convertedFiles));
     sessionStorage.setItem('imageCount', files.length.toString());
 
@@ -105,14 +102,12 @@ const Converter = () => {
     });
   };
 
-  // Persist files state in sessionStorage when it changes
   useEffect(() => {
     if (files.length > 0) {
       sessionStorage.setItem('uploadedFiles', JSON.stringify(files));
     }
   }, [files]);
 
-  // Restore files state from sessionStorage on component mount
   useEffect(() => {
     const savedFiles = sessionStorage.getItem('uploadedFiles');
     if (savedFiles) {
@@ -141,8 +136,6 @@ const Converter = () => {
               {t.subtitle}
             </p>
           </div>
-
-          <ConversionContent input={input || ""} output={output || ""} lang={lang} />
 
           <DropZone
             onFilesAccepted={handleFilesAccepted}
@@ -185,6 +178,8 @@ const Converter = () => {
               </div>
             </div>
           )}
+
+          <ConversionContent input={input || ""} output={output || ""} lang={lang} />
         </div>
       </div>
     </div>
