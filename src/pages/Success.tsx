@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Download, ArrowLeft, Image as ImageIcon } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useEffect } from "react";
+import { useToast } from "@/components/ui/use-toast";
 
 const translations = {
   en: {
@@ -14,6 +15,8 @@ const translations = {
     imagesReady: "Images Ready for Download",
     imageCount: "image(s) ready",
     downloadTip: "Click the button below to download all your converted images",
+    downloadStarted: "Download started",
+    downloadError: "Error downloading images",
   },
   pt: {
     title: "Conversão Concluída!",
@@ -23,6 +26,8 @@ const translations = {
     imagesReady: "Imagens Prontas para Download",
     imageCount: "imagem(ns) pronta(s)",
     downloadTip: "Clique no botão abaixo para baixar todas as suas imagens convertidas",
+    downloadStarted: "Download iniciado",
+    downloadError: "Erro ao baixar imagens",
   },
 };
 
@@ -30,19 +35,46 @@ const Success = () => {
   const { lang = "en" } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const { toast } = useToast();
   const imageCount = location.state?.imageCount || sessionStorage.getItem('imageCount') || 0;
+  const convertedFiles = location.state?.convertedFiles || JSON.parse(sessionStorage.getItem('convertedFiles') || '[]');
   const t = translations[lang as keyof typeof translations];
 
-  // Store imageCount in sessionStorage when it changes
   useEffect(() => {
     if (location.state?.imageCount) {
       sessionStorage.setItem('imageCount', location.state.imageCount.toString());
     }
-  }, [location.state?.imageCount]);
+    if (location.state?.convertedFiles) {
+      sessionStorage.setItem('convertedFiles', JSON.stringify(location.state.convertedFiles));
+    }
+  }, [location.state?.imageCount, location.state?.convertedFiles]);
+
+  const handleDownloadAll = async () => {
+    try {
+      toast({
+        description: t.downloadStarted,
+      });
+
+      // Create a temporary link element for each file and trigger download
+      convertedFiles.forEach((file: { url: string, name: string }) => {
+        const link = document.createElement('a');
+        link.href = file.url;
+        link.download = file.name;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      });
+    } catch (error) {
+      console.error('Download error:', error);
+      toast({
+        variant: "destructive",
+        description: t.downloadError,
+      });
+    }
+  };
 
   const handleBack = () => {
     navigate(`/${lang}`);
-    // Clear session storage when going back to start
     sessionStorage.clear();
   };
 
@@ -75,7 +107,12 @@ const Success = () => {
               <p className="text-center text-sm text-muted-foreground">
                 {t.downloadTip}
               </p>
-              <Button size="lg" className="w-full">
+              <Button 
+                size="lg" 
+                className="w-full"
+                onClick={handleDownloadAll}
+                disabled={!convertedFiles.length}
+              >
                 <Download className="mr-2 h-5 w-5" />
                 {t.downloadAll}
               </Button>
