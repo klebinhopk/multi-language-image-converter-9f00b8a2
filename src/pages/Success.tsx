@@ -3,7 +3,7 @@ import { LanguageSelector } from "@/components/LanguageSelector";
 import { Button } from "@/components/ui/button";
 import { Download, ArrowLeft, Image as ImageIcon } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 const translations = {
@@ -36,18 +36,14 @@ const Success = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
-  const imageCount = location.state?.imageCount || sessionStorage.getItem('imageCount') || 0;
-  const convertedFiles = location.state?.convertedFiles || JSON.parse(sessionStorage.getItem('convertedFiles') || '[]');
-  const t = translations[lang as keyof typeof translations];
+  const [convertedFiles, setConvertedFiles] = useState<Array<{ name: string; url: string }>>([]);
+  const imageCount = location.state?.imageCount || parseInt(sessionStorage.getItem('imageCount') || '0');
 
   useEffect(() => {
-    if (location.state?.imageCount) {
-      sessionStorage.setItem('imageCount', location.state.imageCount.toString());
-    }
-    if (location.state?.convertedFiles) {
-      sessionStorage.setItem('convertedFiles', JSON.stringify(location.state.convertedFiles));
-    }
-  }, [location.state?.imageCount, location.state?.convertedFiles]);
+    // Try to get converted files from location state first, then from sessionStorage
+    const files = location.state?.convertedFiles || JSON.parse(sessionStorage.getItem('convertedFiles') || '[]');
+    setConvertedFiles(files);
+  }, [location.state]);
 
   const handleDownloadAll = async () => {
     try {
@@ -83,6 +79,8 @@ const Success = () => {
     sessionStorage.clear();
   };
 
+  const t = translations[lang as keyof typeof translations];
+
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
       <LanguageSelector />
@@ -116,7 +114,6 @@ const Success = () => {
                 size="lg" 
                 className="w-full"
                 onClick={handleDownloadAll}
-                disabled={!convertedFiles.length}
               >
                 <Download className="mr-2 h-5 w-5" />
                 {t.downloadAll}

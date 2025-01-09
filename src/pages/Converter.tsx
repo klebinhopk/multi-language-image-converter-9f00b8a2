@@ -86,8 +86,21 @@ const Converter = () => {
   };
 
   const handleContinue = () => {
+    // Prepare converted files data
+    const convertedFiles = files.map(({ file }) => ({
+      name: file.name,
+      url: URL.createObjectURL(file)
+    }));
+
+    // Store in sessionStorage and navigate
+    sessionStorage.setItem('convertedFiles', JSON.stringify(convertedFiles));
+    sessionStorage.setItem('imageCount', files.length.toString());
+
     navigate(`/${lang}/${input}/${output}/success`, {
-      state: { imageCount: files.length }
+      state: { 
+        imageCount: files.length,
+        convertedFiles
+      }
     });
   };
 
