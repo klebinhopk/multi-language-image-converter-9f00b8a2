@@ -73,7 +73,9 @@ const Converter = () => {
   };
 
   const handleContinue = () => {
-    navigate(`/${lang}/${input}/${output}/success`);
+    navigate(`/${lang}/${input}/${output}/success`, {
+      state: { imageCount: files.length }
+    });
   };
 
   return (
