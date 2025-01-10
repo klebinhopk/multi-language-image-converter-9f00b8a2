@@ -5,6 +5,7 @@ import { Download, ArrowLeft, Image as ImageIcon } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { ConversionContent } from "@/components/ConversionContent";
 import JSZip from "jszip";
 
 const translations = {
@@ -35,7 +36,7 @@ const translations = {
 };
 
 const Success = () => {
-  const { lang = "en" } = useParams();
+  const { lang = "en", input, output } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
@@ -166,6 +167,8 @@ const Success = () => {
           <ArrowLeft className="mr-2 h-4 w-4" />
           {t.convertMore}
         </Button>
+
+        <ConversionContent input={input || ""} output={output || ""} lang={lang} />
       </div>
     </div>
   );
