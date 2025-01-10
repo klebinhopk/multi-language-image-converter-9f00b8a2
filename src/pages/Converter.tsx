@@ -101,9 +101,6 @@ const Converter = () => {
     });
   };
 
-  // Removido o useEffect que carregava arquivos do sessionStorage
-  // para evitar o item fake aparecendo antes do upload
-
   return (
     <div className="min-h-screen bg-background p-4">
       <LanguageSelector />
