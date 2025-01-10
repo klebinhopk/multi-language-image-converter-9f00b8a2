@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { ConversionContent } from "@/components/ConversionContent";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import JSZip from "jszip";
 
 const translations = {
@@ -20,6 +21,8 @@ const translations = {
     downloadStarted: "Download started",
     downloadError: "Error downloading images",
     downloadComplete: "Download complete",
+    directAccessWarning: "Please select a format to convert your images",
+    directAccessDescription: "You need to upload and convert images before accessing this page",
   },
   pt: {
     title: "Conversão Concluída!",
@@ -32,6 +35,8 @@ const translations = {
     downloadStarted: "Download iniciado",
     downloadError: "Erro ao baixar imagens",
     downloadComplete: "Download completo",
+    directAccessWarning: "Por favor, selecione um formato para converter suas imagens",
+    directAccessDescription: "Você precisa fazer upload e converter imagens antes de acessar esta página",
   },
 };
 
@@ -116,6 +121,32 @@ const Success = () => {
   };
 
   const t = translations[lang as keyof typeof translations];
+
+  // Verifica se não há arquivos convertidos
+  if (!imageCount || convertedFiles.length === 0) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
+        <LanguageSelector />
+        <div className="max-w-2xl w-full space-y-8">
+          <Alert>
+            <AlertDescription className="text-center">
+              <h2 className="text-lg font-semibold mb-2">{t.directAccessWarning}</h2>
+              <p className="text-muted-foreground">{t.directAccessDescription}</p>
+            </AlertDescription>
+          </Alert>
+          <Button
+            variant="default"
+            size="lg"
+            className="w-full"
+            onClick={handleBack}
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            {t.convertMore}
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
