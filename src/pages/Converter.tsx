@@ -34,6 +34,56 @@ const translations = {
     startConversion: "Converter Imagens",
     progressComplete: "Conversão Concluída",
   },
+  es: {
+    title: "Subir Imágenes",
+    subtitle: "Arrastra tus imágenes aquí o haz clic para navegar",
+    back: "Volver",
+    converting: "Convirtiendo",
+    downloadCompleted: "Descarga Completada",
+    continue: "Continuar a la Página de Descarga",
+    startConversion: "Convertir Imágenes",
+    progressComplete: "Conversión Completada",
+  },
+  fr: {
+    title: "Télécharger des Images",
+    subtitle: "Déposez vos images ici ou cliquez pour parcourir",
+    back: "Retour",
+    converting: "Conversion en cours",
+    downloadCompleted: "Téléchargement Terminé",
+    continue: "Continuer vers la Page de Téléchargement",
+    startConversion: "Convertir les Images",
+    progressComplete: "Conversion Terminée",
+  },
+  de: {
+    title: "Bilder Hochladen",
+    subtitle: "Ziehen Sie Ihre Bilder hierher oder klicken Sie zum Durchsuchen",
+    back: "Zurück",
+    converting: "Konvertierung",
+    downloadCompleted: "Download Abgeschlossen",
+    continue: "Weiter zur Download-Seite",
+    startConversion: "Bilder Konvertieren",
+    progressComplete: "Konvertierung Abgeschlossen",
+  },
+  it: {
+    title: "Carica Immagini",
+    subtitle: "Trascina le tue immagini qui o clicca per sfogliare",
+    back: "Indietro",
+    converting: "Conversione",
+    downloadCompleted: "Download Completato",
+    continue: "Continua alla Pagina di Download",
+    startConversion: "Converti Immagini",
+    progressComplete: "Conversione Completata",
+  },
+  ja: {
+    title: "画像をアップロード",
+    subtitle: "ここに画像をドロップするか、クリックして参照",
+    back: "戻る",
+    converting: "変換中",
+    downloadCompleted: "ダウンロード完了",
+    continue: "ダウンロードページへ進む",
+    startConversion: "画像を変換",
+    progressComplete: "変換完了",
+  },
 };
 
 const Converter = () => {
@@ -43,7 +93,7 @@ const Converter = () => {
   const [isConverting, setIsConverting] = useState(false);
   const [conversionComplete, setConversionComplete] = useState(false);
   
-  const t = translations[lang as keyof typeof translations];
+  const t = translations[lang as keyof typeof translations] || translations.en;
 
   const handleFilesAccepted = (acceptedFiles: File[]) => {
     const newFiles = acceptedFiles.map(file => ({
