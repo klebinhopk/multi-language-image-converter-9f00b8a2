@@ -18,9 +18,18 @@ export function FormatSelector({ type, value, onChange, label }: FormatSelectorP
         </SelectTrigger>
         <SelectContent>
           {type === "input" ? (
-            <SelectItem value="webp">WEBP</SelectItem>
+            <>
+              <SelectItem value="webp">WEBP</SelectItem>
+              <SelectItem value="jpg">JPG</SelectItem>
+              <SelectItem value="png">PNG</SelectItem>
+              <SelectItem value="gif">GIF</SelectItem>
+            </>
           ) : (
-            <SelectItem value="png">PNG</SelectItem>
+            <>
+              <SelectItem value="png">PNG</SelectItem>
+              <SelectItem value="jpg">JPG</SelectItem>
+              <SelectItem value="webp">WEBP</SelectItem>
+            </>
           )}
         </SelectContent>
       </Select>
