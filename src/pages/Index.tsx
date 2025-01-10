@@ -52,12 +52,14 @@ const Index = () => {
             value={inputFormat}
             onChange={setInputFormat}
             label={t.inputFormat}
+            disabledValue={outputFormat}
           />
           <FormatSelector
             type="output"
             value={outputFormat}
             onChange={setOutputFormat}
             label={t.outputFormat}
+            disabledValue={inputFormat}
           />
           <Button
             size="lg"

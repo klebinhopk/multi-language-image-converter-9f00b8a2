@@ -6,29 +6,32 @@ interface FormatSelectorProps {
   value: string;
   onChange: (value: string) => void;
   label: string;
+  disabledValue?: string;
 }
 
-export function FormatSelector({ type, value, onChange, label }: FormatSelectorProps) {
+export function FormatSelector({ type, value, onChange, label, disabledValue }: FormatSelectorProps) {
+  console.log(`FormatSelector ${type} - Current value: ${value}, Disabled value: ${disabledValue}`);
+  
   return (
     <Card className="p-4 glass">
       <label className="block text-sm font-medium mb-2">{label}</label>
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger>
+        <SelectTrigger className="bg-background">
           <SelectValue />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="bg-background">
           {type === "input" ? (
             <>
-              <SelectItem value="webp">WEBP</SelectItem>
-              <SelectItem value="jpg">JPG</SelectItem>
-              <SelectItem value="png">PNG</SelectItem>
-              <SelectItem value="gif">GIF</SelectItem>
+              <SelectItem value="webp" disabled={disabledValue === "webp"}>WEBP</SelectItem>
+              <SelectItem value="jpg" disabled={disabledValue === "jpg"}>JPG</SelectItem>
+              <SelectItem value="png" disabled={disabledValue === "png"}>PNG</SelectItem>
+              <SelectItem value="gif" disabled={disabledValue === "gif"}>GIF</SelectItem>
             </>
           ) : (
             <>
-              <SelectItem value="png">PNG</SelectItem>
-              <SelectItem value="jpg">JPG</SelectItem>
-              <SelectItem value="webp">WEBP</SelectItem>
+              <SelectItem value="png" disabled={disabledValue === "png"}>PNG</SelectItem>
+              <SelectItem value="jpg" disabled={disabledValue === "jpg"}>JPG</SelectItem>
+              <SelectItem value="webp" disabled={disabledValue === "webp"}>WEBP</SelectItem>
             </>
           )}
         </SelectContent>
