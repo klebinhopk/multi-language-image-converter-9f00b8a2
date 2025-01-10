@@ -5,7 +5,7 @@ import { ConversionProgress } from "@/components/ConversionProgress";
 import { ConversionContent } from "@/components/ConversionContent";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Download } from "lucide-react";
+import { ArrowLeft, Download, Loader2, Check } from "lucide-react";
 import { toast } from "sonner";
 
 interface FileProgress {
@@ -22,6 +22,7 @@ const translations = {
     downloadCompleted: "Download Completed",
     continue: "Continue to Download Page",
     startConversion: "Convert Images",
+    progressComplete: "Conversion Complete",
   },
   pt: {
     title: "Enviar Imagens",
@@ -31,6 +32,7 @@ const translations = {
     downloadCompleted: "Download Concluído",
     continue: "Continuar para Página de Download",
     startConversion: "Converter Imagens",
+    progressComplete: "Conversão Concluída",
   },
 };
 
@@ -91,9 +93,6 @@ const Converter = () => {
       url: URL.createObjectURL(file)
     }));
 
-    sessionStorage.setItem('convertedFiles', JSON.stringify(convertedFiles));
-    sessionStorage.setItem('imageCount', files.length.toString());
-
     navigate(`/${lang}/${input}/${output}/success`, {
       state: { 
         imageCount: files.length,
@@ -102,18 +101,8 @@ const Converter = () => {
     });
   };
 
-  useEffect(() => {
-    if (files.length > 0) {
-      sessionStorage.setItem('uploadedFiles', JSON.stringify(files));
-    }
-  }, [files]);
-
-  useEffect(() => {
-    const savedFiles = sessionStorage.getItem('uploadedFiles');
-    if (savedFiles) {
-      setFiles(JSON.parse(savedFiles));
-    }
-  }, []);
+  // Removido o useEffect que carregava arquivos do sessionStorage
+  // para evitar o item fake aparecendo antes do upload
 
   return (
     <div className="min-h-screen bg-background p-4">
@@ -140,7 +129,7 @@ const Converter = () => {
           <DropZone
             onFilesAccepted={handleFilesAccepted}
             accept={{
-              'image/webp': ['.webp']
+              'image/*': ['.jpg', '.jpeg', '.png', '.gif', '.webp']
             }}
           />
 
@@ -159,10 +148,22 @@ const Converter = () => {
                 <Button
                   size="lg"
                   onClick={startConversion}
-                  disabled={isConverting}
+                  disabled={isConverting || conversionComplete}
                   className="w-full"
                 >
-                  {t.startConversion}
+                  {isConverting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      {t.converting}
+                    </>
+                  ) : conversionComplete ? (
+                    <>
+                      <Check className="mr-2 h-4 w-4" />
+                      {t.progressComplete}
+                    </>
+                  ) : (
+                    t.startConversion
+                  )}
                 </Button>
 
                 {conversionComplete && (
