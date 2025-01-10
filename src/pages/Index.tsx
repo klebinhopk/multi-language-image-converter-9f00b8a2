@@ -20,6 +20,41 @@ const translations = {
     outputFormat: "Formato de Saída",
     convert: "Converter Imagens",
   },
+  es: {
+    title: "Conversor de Imágenes",
+    subtitle: "Convierte tus imágenes de forma rápida y fácil",
+    inputFormat: "Formato de Entrada",
+    outputFormat: "Formato de Salida",
+    convert: "Convertir Imágenes",
+  },
+  fr: {
+    title: "Convertisseur d'Images",
+    subtitle: "Convertissez vos images rapidement et facilement",
+    inputFormat: "Format d'Entrée",
+    outputFormat: "Format de Sortie",
+    convert: "Convertir les Images",
+  },
+  de: {
+    title: "Bildkonverter",
+    subtitle: "Konvertieren Sie Ihre Bilder schnell und einfach",
+    inputFormat: "Eingabeformat",
+    outputFormat: "Ausgabeformat",
+    convert: "Bilder Konvertieren",
+  },
+  it: {
+    title: "Convertitore di Immagini",
+    subtitle: "Converti le tue immagini in modo rapido e semplice",
+    inputFormat: "Formato di Input",
+    outputFormat: "Formato di Output",
+    convert: "Converti Immagini",
+  },
+  ja: {
+    title: "画像コンバーター",
+    subtitle: "画像を素早く簡単に変換",
+    inputFormat: "入力フォーマット",
+    outputFormat: "出力フォーマット",
+    convert: "画像を変換",
+  },
 };
 
 const Index = () => {
@@ -28,7 +63,7 @@ const Index = () => {
   const [outputFormat, setOutputFormat] = useState("png");
   
   const currentLang = window.location.pathname.split("/")[1] || "en";
-  const t = translations[currentLang as keyof typeof translations];
+  const t = translations[currentLang as keyof typeof translations] || translations.en;
 
   const handleConvert = () => {
     navigate(`/${currentLang}/${inputFormat}/${outputFormat}`);
