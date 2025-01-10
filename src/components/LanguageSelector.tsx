@@ -1,5 +1,11 @@
-import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function LanguageSelector() {
   const navigate = useNavigate();
@@ -17,21 +23,21 @@ export function LanguageSelector() {
   };
 
   return (
-    <div className="fixed top-4 right-4 flex gap-2 animate-fade-down">
-      <Button
-        variant={currentLang === "en" ? "default" : "ghost"}
-        size="sm"
-        onClick={() => switchLanguage("en")}
-      >
-        EN
-      </Button>
-      <Button
-        variant={currentLang === "pt" ? "default" : "ghost"}
-        size="sm"
-        onClick={() => switchLanguage("pt")}
-      >
-        PT
-      </Button>
+    <div className="fixed top-4 right-4 w-[120px] animate-fade-down">
+      <Select value={currentLang} onValueChange={switchLanguage}>
+        <SelectTrigger>
+          <SelectValue placeholder="Select language" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="en">English</SelectItem>
+          <SelectItem value="pt">Português</SelectItem>
+          <SelectItem value="es">Español</SelectItem>
+          <SelectItem value="fr">Français</SelectItem>
+          <SelectItem value="de">Deutsch</SelectItem>
+          <SelectItem value="it">Italiano</SelectItem>
+          <SelectItem value="ja">日本語</SelectItem>
+        </SelectContent>
+      </Select>
     </div>
   );
 }
