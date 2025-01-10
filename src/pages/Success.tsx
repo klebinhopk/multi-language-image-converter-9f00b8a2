@@ -116,13 +116,12 @@ const Success = () => {
 
   const handleBack = () => {
     navigate(`/${lang}`);
-    // Clear session storage when going back
     sessionStorage.clear();
   };
 
   const t = translations[lang as keyof typeof translations];
 
-  // Verifica se não há arquivos convertidos
+  // If there are no converted files, show the alert but still display the conversion content
   if (!imageCount || convertedFiles.length === 0) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
@@ -143,6 +142,9 @@ const Success = () => {
             <ArrowLeft className="mr-2 h-4 w-4" />
             {t.convertMore}
           </Button>
+          {input && output && (
+            <ConversionContent input={input} output={output} lang={lang} />
+          )}
         </div>
       </div>
     );
@@ -199,7 +201,9 @@ const Success = () => {
           {t.convertMore}
         </Button>
 
-        <ConversionContent input={input || ""} output={output || ""} lang={lang} />
+        {input && output && (
+          <ConversionContent input={input} output={output} lang={lang} />
+        )}
       </div>
     </div>
   );
