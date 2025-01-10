@@ -56,7 +56,7 @@ const Success = () => {
   const handleDownloadAll = async () => {
     try {
       toast({
-        description: t.downloadStarted,
+        description: translations[lang].downloadStarted,
       });
 
       if (convertedFiles.length === 1) {
@@ -100,7 +100,7 @@ const Success = () => {
       }
 
       toast({
-        description: t.downloadComplete,
+        description: translations[lang].downloadComplete,
       });
 
       // Clear session storage after successful download
@@ -109,7 +109,7 @@ const Success = () => {
       console.error('Download error:', error);
       toast({
         variant: "destructive",
-        description: t.downloadError,
+        description: translations[lang].downloadError,
       });
     }
   };
@@ -121,7 +121,6 @@ const Success = () => {
 
   const t = translations[lang as keyof typeof translations];
 
-  // If there are no converted files, show the alert but still display the conversion content
   if (!imageCount || convertedFiles.length === 0) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
@@ -142,9 +141,6 @@ const Success = () => {
             <ArrowLeft className="mr-2 h-4 w-4" />
             {t.convertMore}
           </Button>
-          {input && output && (
-            <ConversionContent input={input} output={output} lang={lang} />
-          )}
         </div>
       </div>
     );
